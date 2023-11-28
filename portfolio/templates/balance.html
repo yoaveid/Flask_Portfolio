@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>Cash Page</h1>
+    <h3>Your account balance: ${{ account_balance|round(2) }}</h3>
+    <p>Explore your financial standing on the Balance Page.
+        This page provides a snapshot of your current account balance, giving you a quick overview of your available funds.</p>
+
+{% endblock content %}

@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>Stock Data for {{ stock_symbol }}</h2>
+
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Open Price</th>
+            <th>Price</th>
+            <th>Profit today</th>
+            <th>Market Cap</th>
+            <!-- Add more fields for other fundamental data as needed -->
+        </tr>
+        <tr>
+            <td>{{ stock_symbol }}</td>
+            <td>${{ stock_data.open_price | round(2) }}</td>
+            <td>${{ stock_data.curr_price | round(2) }}</td>
+            <td style="color: {% if stock_data.profitValue > 0 %}#008000{% else %}#ff0000{% endif %};">
+                ${{ stock_data.profitValue | round(2) }}
+                ({{ stock_data.profitPercent | round(2) }}%)
+            </td>
+            <td>
+                {{ (stock_data.market_Cap/(10**9)) | round(2) }}B
+
+            </td>
+
+        </tr>
+    </table>
+    <div>
+        <label for="time-period">Select Time Period:</label>
+<form method="post">
+    <select name="time-period">
+        {% set time_periods = [('1d', '1 Day'), ('5d', '5 Days'), ('1m', '1 Month'),('6m', '6 Months'), ('ytd', 'Year-to-Date'), ('1y', '1 Year'), ('5y', '5 Years')] %}
+        {% for value, label in time_periods %}
+            <option value="{{ value }}"
+        {% if request.form.get('time-period') == value %}
+        selected
+        {% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Submit</button>
+</form>
+
+    </div>
+     <div >
+         <h4 >Profit:
+                <small  style="color: {% if profits[0] > 0 %}#008000{% else %}#ff0000{% endif %};">
+                    {{profits[0]|round(2)}} $
+                    ({{profits[1] |round(2)}}%)</small>
+         </h4>
+                 </div>
+        <div id="stock-graph" >
+    </div>
+
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    function createStockGraph() {
+        const graph_data = {{ graph_data | tojson | safe }};
+        const profit  = {{profits[0]|round(2)}}
+        const lineColor = profit >= 0 ? 'green' : 'red';
+        const markerColor = profit >= 0 ? 'green' : 'red';
+        // Define the trace for the graph
+        const trace = {
+            x: graph_data.dates,
+            y: graph_data.prices,
+            type: 'scatter',
+            mode: 'lines',
+            line: {
+            color: lineColor,
+        },
+
+        };
+
+        // Define the layout options
+        const layout = {
+            title: 'Stock Price Graph of {{stock_symbol}}',
+            xaxis: {
+                title: 'Date',
+            },
+            yaxis: {
+                title: 'Price',
+            },
+        };
+
+        // Create the graph
+        const data = [trace];
+        Plotly.newPlot('stock-graph', data, layout);
+    }
+
+    // Call the function to create the graph when the page loads
+    window.onload = createStockGraph();
+</script>
+{% endblock content %}

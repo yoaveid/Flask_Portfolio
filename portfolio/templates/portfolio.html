@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2 style="display: inline;">My Portfolio - Portfolio Value:<br>
+        ${{ portfolio_data.portfolio_value | round(2) }}</h2>
+    <p style="color: {% if portfolio_data.portfolio_profitValue >= 0 %}#008000{% else %}#ff0000{% endif %}; display: inline;">
+        ${{ portfolio_data.portfolio_profitValue | round(2) }} ({{ portfolio_data.portfolio_profitPercent | round(2) }}%)
+    </p>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Stock Name</th>
+                <th>Total Quantity</th>
+                <th>Price per Unit buying</th>
+                <th>Price per Unit Now</th>
+                <th>Total Sum Over All</th>
+                <th>Profit</th>
+                <th>Change Today</th>
+                <th>Action</th>  <!-- Added a column for actions -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in myPortfolio %}
+                <tr>
+                    <td><a class="nav-item nav-link" href = "{{ url_for('stocks.stock', stock_symbol=stock.stock_name) }}">
+                        {{ stock.stock_name }}</a></td>
+                    <td>{{ stock.quantity }}</td>
+                    <td>${{ stock.buy_price | round(2) }}</td>
+                    <td>${{ stock.curr_price | round(2) }}</td>
+                    <td>${{ stock.sum_over_all | round(2) }}</td>
+                    <td style="color: {% if stock.profitValue >= 0 %}#008000{% else %}#ff0000{% endif %};">
+                        ${{ stock.profitValue | round(2) }} ({{ stock.profitPercent | round(2) }}%)
+                    </td>
+                    <td style="color: {% if stock.change_value_today >= 0 %}#008000{% else %}#ff0000{% endif %};">
+                        ${{ stock.change_value_today | round(2) }} ({{ stock.change_percent_today | round(2) }}%)
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('transactions.new_transaction') }}">
+                            <input type="hidden" name="stock_name" value="{{ stock.stock_name }}">
+                            <button type="submit" class="btn btn-danger">Sell</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load("current", {packages: ["corechart"]});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Stock Name');
+            data.addColumn('number', 'Allocation');
+
+            data.addRows([
+                {% for key, value in portfolio_allocation %}
+                ["{{ key }}", {{ value }}],
+                {% endfor %}
+            ]);
+
+            var options = {
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
+        }
+    </script>
+    <h3>Portfolio Allocation</h3>
+
+    <div id="piechart" class="content-section" style="width: 730px; height:500px;">
+    </div>
+
+{% endblock content %}
+

@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+    <head>
+        <h1>Transaction history</h1>
+        <h3 "display: inline"> Portfolio Value: {{ portfolio_value }}$</h3>
+    </head>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Stock Name</th>
+                <th>Quantity</th>
+                <th>Price per Unit</th>
+                <th>Sum Over All</th>
+                <th>Transaction Type</th>
+                <th>Transaction Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions.items %}
+                <tr>
+                    <td>
+                        <a class="nav-item nav-link" href = "{{ url_for('stocks.stock', stock_symbol=transaction.stock_name ) }}">
+                        {{ transaction.stock_name }}</a></td>
+                    <td>{{ transaction.quantity  | round(2)}}</td>
+                    <td>${{ transaction.price_per_unit  | round(2)}}</td>
+                    <td>${{ transaction.sum_over_all  | round(2)}}</td>
+                    <td>{{ transaction.transaction_type }}</td>
+                    <td>{{ transaction.transaction_date.strftime('%d-%m-%Y') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% for page_num in transactions.iter_pages(left_edge =1, right_edge =1, left_current =1, right_current =2) %}
+        {% if page_num %}
+            {% if transactions.page == page_num %}
+                <a class="btn btn-info mb-4" href="{{ url_for('transactions.transaction_history', page=page_num) }}">{{ page_num }}</a>
+            {% else %}
+                <a class="btn btn-outlint-info mb-4" href="{{ url_for('transactions.transaction_history', page=page_num) }}">{{ page_num }}</a>
+            {% endif %}
+        {% else %}
+            ...
+        {% endif %}
+
+    {% endfor %}
+
+{% endblock content %}
