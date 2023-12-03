@@ -22,14 +22,8 @@ def create_app(config_class= config):
 
     db.init_app(app)
 
-    """
-    Only run this code if it is the first time you run the application.
-    This code will create the DB for the application """
-    """
-    with app.app_context():
-        db.create_all()
-        db.session.commit()
-    """
+
+
     bcrypt.init_app(app)
     login_manager.init_app(app)
 
@@ -43,4 +37,12 @@ def create_app(config_class= config):
     app.register_blueprint(main)
     app.register_blueprint(stocks)
     app.register_blueprint(errors)
+        """
+    Only run this code if it is the first time you run the application.
+    This code will create the DB for the application """
+        """
+    with app.app_context():
+        db.create_all()
+        db.session.commit()
+    """
     return app
