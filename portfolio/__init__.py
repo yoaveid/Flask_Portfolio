@@ -19,14 +19,17 @@ mail = Mail()
 def create_app(config_class= config):
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    db.init_app(app)
+
     """
     Only run this code if it is the first time you run the application.
-    This code will create the DB for the application
+    This code will create the DB for the application """
+    """
     with app.app_context():
         db.create_all()
         db.session.commit()
     """
-    db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
 
