@@ -34,9 +34,7 @@ Clone using ```https://github.com/yoaveid/Flask_Portfolio.git```
  ```pip install -r requirements.txt ```
 
 * In the init.py file in the portfolio_flask folder remove the commenents and create the DB.
-* In the config.py file update the variables to your variables:    
-MAIL_USERNAME = os.environ.get('EAMIL_USER') <br>
-MAIL_PASSWORD = os.environ.get('EAMIL_PASS')
+
 
 
 ## Technologies
