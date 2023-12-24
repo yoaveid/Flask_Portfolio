@@ -12,7 +12,6 @@ This app provide a managemanet of your stock portfolio including:
 - [Technologies](#technologies)
 
 
-* Run the run.py file.
 
 ## Introduction
 
@@ -35,6 +34,7 @@ Clone using ```https://github.com/yoaveid/Flask_Portfolio.git```
 
 * In the init.py file in the portfolio_flask folder remove the commenents and create the DB.
 
+* Run the run.py file.
 
 
 ## Technologies
